@@ -32,13 +32,13 @@ namespace ShowConsole
             }
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("Original Author of ShowConsoleMod: InitLoader");
+            Debug.Log("Original Author of ShowConsoleMod: InitLoader");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
         void OnDisable()
         {
-            // do nothing, restart game to close console
+            Debug.Log("Please restart the game to hide the console after disabling the mod.");
         }
 
         static void InitializeConsole()
@@ -51,7 +51,7 @@ namespace ShowConsole
             if (GetConsoleWindow() == IntPtr.Zero)
                 AllocConsole();
 
-            Console.Title = "Dockov Console";
+            Console.Title = "Duckov Console";
             var utf8 = new UTF8Encoding(false);
             Console.InputEncoding = utf8;
             Console.OutputEncoding = utf8;

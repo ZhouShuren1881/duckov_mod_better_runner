@@ -1,0 +1,1 @@
+cp '.\bin\Debug\netstandard2.1\ModDemo.dll' 'C:\Program Files (x86)\Steam\steamapps\common\Escape from Duckov\Duckov_Data\Mods\ModDemo\ModDemo.dll'
