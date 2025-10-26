@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- This should be the folder that contains Duckov.exe -->
+    <!-- 下面这行里填写你的鸭科夫安装路径，这样编译器就能找到相关的dll文件 -->
+    <DuckovPath>C:\Program Files (x86)\Steam\steamapps\common\Escape from Duckov</DuckovPath>
+  </PropertyGroup>
+  
+  <!-- 收集 Duckov 中的相关 DLL 文件 -->
+  <ItemGroup>
+    <TeamSodaDlls Include="$(DuckovPath)\Duckov_Data\Managed\TeamSoda.*.dll" />
+    <UnityDlls Include="$(DuckovPath)\Duckov_Data\Managed\Unity*.dll" />
+  </ItemGroup>
+
+  <!-- 引用 TeamSoda 系列 DLL -->
+  <ItemGroup>
+    <Reference Include="@(TeamSodaDlls)">
+      <HintPath>%(TeamSodaDlls.Identity)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 引用 Unity 系列 DLL -->
+  <ItemGroup>
+    <Reference Include="@(UnityDlls)">
+      <HintPath>%(UnityDlls.Identity)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 引用其他单个 DLL -->
+  <ItemGroup>
+    <Reference Include="SodaLocalization">
+      <HintPath>$(DuckovPath)\Duckov_Data\Managed\SodaLocalization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ItemStatsSystem">
+      <HintPath>$(DuckovPath)\Duckov_Data\Managed\ItemStatsSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony.dll" />
+  </ItemGroup>
+</Project>
