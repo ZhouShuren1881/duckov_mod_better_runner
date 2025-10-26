@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <!-- This should be the folder that contains Duckov.exe -->
@@ -7,8 +8,9 @@
     <DuckovPath>C:\Program Files (x86)\Steam\steamapps\common\Escape from Duckov</DuckovPath>
   </PropertyGroup>
   <ItemGroup>
-        <Reference Include="$(DuckovPath)\Duckov_Data\Managed\TeamSoda.*" />
-        <Reference Include="$(DuckovPath)\Duckov_Data\Managed\ItemStatsSystem.dll" />
-        <Reference Include="$(DuckovPath)\Duckov_Data\Managed\Unity*" />
+    <Reference Include="$(DuckovPath)\Duckov_Data\Managed\TeamSoda.*" />
+    <Reference Include="$(DuckovPath)\Duckov_Data\Managed\SodaLocalization.dll" />
+    <Reference Include="$(DuckovPath)\Duckov_Data\Managed\ItemStatsSystem.dll" />
+    <Reference Include="$(DuckovPath)\Duckov_Data\Managed\Unity*" />
   </ItemGroup> 
 </Project>
