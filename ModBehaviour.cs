@@ -113,53 +113,80 @@ public class ModBehaviour : Duckov.Modding.ModBehaviour
     }
 
     #region 保证栓动和半自动武器正常开火
-    /*/// <summary>
+    /// <summary>
     /// 启用 Running 屏蔽。
     /// </summary>
     [HarmonyPatch(typeof(CharacterMainControl), "Trigger")]
     public class CharacterMainControlTriggerPatch
     {
-
-        private static FieldInfo fiDisableTriggerTimer = AccessTools.Field(typeof(CharacterMainControl), "disableTriggerTimer");
-        private static FieldInfo fiOnTriggerInputUpdateEvent = AccessTools.Field(typeof(CharacterMainControl), "OnTriggerInputUpdateEvent");
-
         [HarmonyPrefix]
-        public static bool Prefix(CharacterMainControl __instance, bool trigger, bool triggerThisFrame, bool releaseThisFrame)
+        public static bool Prefix(CharacterMainControl __instance, bool trigger, ref bool triggerThisFrame, bool releaseThisFrame)
         {
-            if (!configToggle2Run || !backgroundRunInputBuffer)
-            {
+            if (!ModEnabled) {
+                resetCache();
                 return true;
             }
 
-            // if (Running || disableTriggerTimer > 0f)
-            // {
-            //     trigger = false;
-            //     triggerThisFrame = false;
-            // }
-            // else if (trigger && CharacterMoveability > 0.5f)
-            // {
-            //     movementControl.ForceSetAimDirectionToAimPoint();
-            // }
-            // this.OnTriggerInputUpdateEvent?.Invoke(trigger, triggerThisFrame, releaseThisFrame);
-            // agentHolder.SetTrigger(trigger, triggerThisFrame, releaseThisFrame);
-
-            if ((float)fiDisableTriggerTimer.GetValue(__instance) > 0f)
+            if (!configToggle2Run || !backgroundRunInputBuffer)
             {
-                trigger = false;
-                triggerThisFrame = false;
-            }
-            else if (trigger && __instance.CharacterMoveability > 0.5f)
-            {
-                __instance.movementControl.ForceSetAimDirectionToAimPoint();
+                resetCache();
+                return true;
             }
 
-            var onTriggerInputUpdateEvent = (Action<bool, bool, bool>)fiOnTriggerInputUpdateEvent.GetValue(__instance);
-            onTriggerInputUpdateEvent?.Invoke(trigger, triggerThisFrame, releaseThisFrame);
-            __instance.agentHolder.SetTrigger(trigger, triggerThisFrame, releaseThisFrame);
+            // 在奔跑状态下延迟播放序列，进入非奔跑状态后重新播放信号。序列要求：<TTF>,<TFF>,<TFF>...
+            if (!cacheTriggerThisFrame)
+            {
+                // 等待序列头
+                if (!(__instance.Running && checkSequenceHead(trigger, triggerThisFrame, releaseThisFrame)))
+                {
+                    resetCache(); // 只有 cacheTriggerThisFrame 一个标志时，等效于无效操作
+                    return true;
+                }
+                cacheTriggerThisFrame = true;
+                return true;
+            }
+            else
+            {
+                // 处理序列体
+                // 严格校验准入规则
+                if (!checkValidSequenceBody(trigger, triggerThisFrame, releaseThisFrame))
+                {
+                    resetCache();
+                    return true;
+                }
 
-            return false;
+                if (__instance.Running)
+                {
+                    return true;
+                }
+
+                // 进入非奔跑模式，重新播放 triggerThisFrame
+                triggerThisFrame = true;
+                resetCache();
+                return true;
+            }
         }
-    }*/
+
+        private static bool cacheTriggerThisFrame = false;
+
+        /// <summary>
+        /// 重置为正常状态。
+        /// </summary>
+        private static void resetCache()
+        {
+            cacheTriggerThisFrame = false;
+        }
+
+        private static bool checkSequenceHead(bool trigger, bool triggerThisFrame, bool releaseThisFrame)
+        {
+            return trigger && triggerThisFrame && !releaseThisFrame;
+        }
+
+        private static bool checkValidSequenceBody(bool trigger, bool triggerThisFrame, bool releaseThisFrame)
+        {
+            return trigger && !triggerThisFrame && !releaseThisFrame;
+        }
+    }
 
     # endregion
     # endregion
