@@ -1,1 +1,0 @@
-cp '.\bin\Debug\netstandard2.1\BetterRunner.dll' 'C:\Program Files (x86)\Steam\steamapps\workshop\content\3167020\3594173614\BetterRunner.dll'
