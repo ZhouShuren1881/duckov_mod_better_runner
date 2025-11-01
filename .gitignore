@@ -226,3 +226,4 @@ AppPackages/
 #####
 
 *.dll
+deploy.ps1
